@@ -19,6 +19,8 @@ shows which documents it came from.
 
 ## Running locally
 
+Full step-by-step setup (MongoDB, API key, troubleshooting) is in [RUNBOOK.md](RUNBOOK.md).
+
 Needs **Python 3.10+**, **Node.js 20+** and a **MongoDB** database: either MongoDB running locally
 (`mongodb://localhost:27017`) or a free [MongoDB Atlas](https://www.mongodb.com/atlas) cluster.
 
