@@ -70,7 +70,7 @@ def bm25_scores(query_tokens, chunk_tokens, k1=1.5, b=0.75):
     return scores
 
 
-# documents are sqlite rows with id, original_name and content
+# documents are mongo docs with _id, originalName and content
 def search(question, documents):
     query_tokens = set(tokenize(question))
     if not query_tokens:
@@ -80,7 +80,7 @@ def search(question, documents):
     for doc in documents:
         # file name counts too, so "leave policy" finds leave-policy.txt
         for text in split_chunks(doc["content"]):
-            chunks.append({"doc": doc, "text": text, "tokens": tokenize(doc["original_name"] + " " + text)})
+            chunks.append({"doc": doc, "text": text, "tokens": tokenize(doc["originalName"] + " " + text)})
 
     if not chunks:
         return [], []
@@ -98,13 +98,13 @@ def search(question, documents):
     sources = {}
     for chunk in top:
         if len(sources) < MAX_SOURCES:
-            sources.setdefault(chunk["doc"]["id"], chunk["doc"])
+            sources.setdefault(chunk["doc"]["_id"], chunk["doc"])
     sources = list(sources.values())
-    source_ids = {doc["id"] for doc in sources}
+    source_ids = {doc["_id"] for doc in sources}
 
     context = [
-        {"name": chunk["doc"]["original_name"], "text": chunk["text"]}
+        {"name": chunk["doc"]["originalName"], "text": chunk["text"]}
         for chunk in top
-        if chunk["doc"]["id"] in source_ids
+        if chunk["doc"]["_id"] in source_ids
     ]
     return sources, context

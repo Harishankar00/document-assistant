@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 
 
 class DocumentOut(BaseModel):
-    id: str = Field(alias="_id", examples=["3f2b8c1e9a4d4e0f8b7a6c5d4e3f2a1b"])
+    id: str = Field(alias="_id", examples=["66f3c1a2b4d5e6f708192a3b"])
     originalName: str = Field(examples=["leave-policy.txt"])
     extension: str = Field(examples=[".txt"])
     mimeType: str = Field(examples=["text/plain"])

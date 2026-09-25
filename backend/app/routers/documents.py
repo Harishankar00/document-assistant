@@ -1,5 +1,4 @@
 import json
-import re
 import uuid
 from pathlib import Path
 
@@ -16,8 +15,7 @@ ERRORS = {400: {"model": ErrorOut}, 404: {"model": ErrorOut}}
 
 
 def find_document(doc_id):
-    # ids are uuid4 hex strings
-    if not re.fullmatch(r"[0-9a-f]{32}", doc_id):
+    if not db.is_valid_id(doc_id):
         raise HTTPException(400, "Invalid document id")
     row = db.get_document(doc_id)
     if not row:
@@ -98,15 +96,15 @@ def get_document(doc_id: str):
 )
 def download_document(doc_id: str):
     row = find_document(doc_id)
-    path = settings.UPLOAD_DIR / row["stored_name"]
+    path = settings.UPLOAD_DIR / row["storedName"]
     if not path.exists():
         raise HTTPException(404, "File for this document is missing on the server")
-    return FileResponse(path, media_type=row["mime_type"], filename=row["original_name"])
+    return FileResponse(path, media_type=row["mimeType"], filename=row["originalName"])
 
 
 @router.delete("/{doc_id}", response_model=DeleteOut, responses=ERRORS)
 def delete_document(doc_id: str):
     row = find_document(doc_id)
-    (settings.UPLOAD_DIR / row["stored_name"]).unlink(missing_ok=True)
+    (settings.UPLOAD_DIR / row["storedName"]).unlink(missing_ok=True)
     db.delete_document(doc_id)
     return {"message": "Document deleted", "_id": doc_id}

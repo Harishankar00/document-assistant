@@ -24,7 +24,7 @@ async def ask(body: ChatRequest):
     if len(question) > MAX_QUESTION_LENGTH:
         raise HTTPException(400, f"Question is too long (max {MAX_QUESTION_LENGTH} characters)")
 
-    documents = db.list_documents()
+    documents = db.list_with_content()
     if not documents:
         return {"answer": "No documents have been uploaded yet. Upload a document first, then ask about it.", "sources": []}
 
@@ -37,6 +37,6 @@ async def ask(body: ChatRequest):
 
     return {
         "answer": answer,
-        "sources": [{"_id": doc["id"], "originalName": doc["original_name"]} for doc in sources],
+        "sources": [{"_id": str(doc["_id"]), "originalName": doc["originalName"]} for doc in sources],
         "provider": provider,
     }
